@@ -7,6 +7,7 @@ var game = new Phaser.Game(800, 640,Phaser.AUTO,'',{
 var plataformas;
 var personagem;
 var tecla;
+var estrelas;
 
 function preload() {
     game.load.image('ceu','sprites/sky.png');
@@ -36,18 +37,28 @@ function create() {
     personagem =  game.add.sprite(15, game.world.height-150, 'personagem');
     game.physics.arcade.enable(personagem);
 
-    personagem.body.bounce.y = 0.5;
-    personagem.body.gravity.y = 300;
+    personagem.body.bounce.y = 0.2;
+    personagem.body.gravity.y = 400;
     personagem.body.collideWorldBounds = true;
 
+    //Aplica animação no personagem
     personagem.animations.add('esquerda', [0,1,2,3], 10, true);
     personagem.animations.add('direita', [5,6,7,8], 10, true);
 
+    //Cria as estrelas
+    estrelas = game.add.group();
+    estrelas.enableBody = true;
+
+    for (var i=0; i<15; i++) {
+        var estrela = estrelas.create(i*40,0,'estrela');
+        estrela.body.gravity.y = 500;
+        estrela.body.bounce.y = 0.3 + Math.random()*0.15;
+    }
 }
 
 function update() {
     var noChao = game.physics.arcade.collide(personagem, plataformas);
-    
+    game.physics.arcade.collide(estrelas, plataformas);
     personagem.body.velocity.x = 0;
 
     if (tecla.right.isDown) {
