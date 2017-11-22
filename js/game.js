@@ -8,6 +8,9 @@ var plataformas;
 var personagem;
 var tecla;
 var estrelas;
+var pontuacao = 0;
+var pontuacaoTexto;
+
 
 function preload() {
     game.load.image('ceu','sprites/sky.png');
@@ -20,6 +23,7 @@ function preload() {
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0,0,'ceu');
+    pontuacaoTexto = game.add.text(10,10,'Score: 0', {'fontSize':'24px', 'fill':'#fff'});
 
     plataformas = game.add. group();
     plataformas.enableBody = true;
@@ -59,6 +63,8 @@ function create() {
 function update() {
     var noChao = game.physics.arcade.collide(personagem, plataformas);
     game.physics.arcade.collide(estrelas, plataformas);
+    game.physics.arcade.overlap(personagem, estrelas, coleta, null, this);
+
     personagem.body.velocity.x = 0;
 
     if (tecla.right.isDown) {
@@ -75,4 +81,10 @@ function update() {
     if (tecla.up.isDown && noChao && personagem.body.touching.down) {
         personagem.body.velocity.y = -400;
     }
+}
+
+function coleta(personagem, estrela){
+    estrela.kill();
+    pontuacao+=10;
+    pontuacaoTexto.text = 'Score: '+pontuacao;
 }
